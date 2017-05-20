@@ -8,19 +8,22 @@
  */
 
 import processing.opengl.*;
+import processing.pdf.*;
+import java.util.Calendar;
 
 boolean wStroke = true;
 boolean haltIt = false;
 boolean wNeg = false;
 boolean wBright = true;
 boolean wDot = false;
+boolean recordPDF = false;
 int myAlpha = 0; 
 
 float wild = 1.2; // 1.7
 
 float thresh = 1; //0.958;
 int rows, cols;
-float stitchW = 8, stitchH = 8; //15
+float stitchW = 6, stitchH = 6; //15
 float stringWidth = (stitchW + stitchH)/3; //1.5;
 
 color backCol = #f3f0d0;
@@ -36,9 +39,9 @@ PImage orig;
 void setup() {
 
   colorMode(RGB);
-  orig = loadImage("RainbowBirds.jpg");
+  orig = loadImage("perachYafe.png");
   //size(orig.width, orig.height);
-  size(1200, 1141);
+  size(1780, 1430);
   cols = int(width/stitchW) + 4;
   rows = int(height/stitchH) + 4;
 
@@ -115,8 +118,29 @@ void keyPressed() {
     initialize();
     redraw();
   }
-
+  
+   if (key =='r' || key =='R') {
+    if (recordPDF == false) {   
+      beginRecord(PDF, "pdfs/em"+timestamp()+".pdf");
+      redraw();
+      println("recording started");
+      recordPDF = true;
+    }
+  } 
+  if (key == 'e' || key =='E') {
+    if (recordPDF) {
+      println("recording stopped");
+      endRecord();
+      recordPDF = false;
+    }
+  }
   if (key == 'p' || key == 'P' || key == 's' || key == 'S') {
     saveFrame("snapshots/pic_"+ year() + month() + day() + int(random(4000, 10000)) + ".png");
   }
+}
+
+// timestamp
+String timestamp() {
+  Calendar now = Calendar.getInstance();
+  return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
